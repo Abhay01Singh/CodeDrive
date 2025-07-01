@@ -12,7 +12,7 @@ import enrollRouter from "./routes/enrollRoutes.js";
 import { stripeWebhooks } from "./controllers/EnrollController.js";
 
 const app = express();
-const port = 3007;
+const port = process.env.PORT || 3007;
 
 await connectDB();
 await connectCloudinary();

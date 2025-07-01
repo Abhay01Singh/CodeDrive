@@ -3,7 +3,7 @@ import authUser from "../middlewares/authUser.js";
 import {
   enrollCourse,
   getPaidCourses,
-} from "../controllers/EnrollController.js";
+} from "../controllers/enrollController.js";
 
 const enrollRouter = express.Router();
 enrollRouter.post("/stripe", authUser, enrollCourse);

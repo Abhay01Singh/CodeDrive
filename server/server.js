@@ -12,12 +12,15 @@ import enrollRouter from "./routes/enrollRoutes.js";
 import { stripeWebhooks } from "./controllers/enrollController.js";
 
 const app = express();
-const port = process.env.PORT || 3007;
+const port = 3007;
 
 await connectDB();
 await connectCloudinary();
 
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://codedrive-frontend.onrender.com",
+];
 
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 

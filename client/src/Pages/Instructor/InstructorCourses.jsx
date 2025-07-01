@@ -1,7 +1,7 @@
 import React from "react";
 import { useAppContext } from "../../context/AppContext";
 import CourseCard from "../../components/CourseCard";
-const MyCourses = async () => {
+const InstructorCourses = async () => {
   const { courses, axios } = useAppContext();
 
   return (
@@ -15,4 +15,4 @@ const MyCourses = async () => {
     </div>
   );
 };
-export default MyCourses;
+export default InstructorCourses;

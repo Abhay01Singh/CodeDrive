@@ -58,7 +58,7 @@ export const enrollCourse = async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: `${origin}/my-courses`,
+      success_url: `${origin}/user/my-courses`,
       cancel_url: `${origin}/`,
       metadata: {
         enrollId: newEnroll._id.toString(),
@@ -133,12 +133,17 @@ export const stripeWebhooks = async (req, res) => {
 // Get all paid courses (admin or user)
 export const getPaidCourses = async (req, res) => {
   try {
-    const enrollments = await Enroll.find({ isPaid: true })
-      .populate("courseId")
-      .populate("userId", "name email");
+    const userId = req.user.id;
 
-    res.json({ success: true, data: enrollments });
+    const courses = await Enroll.find({ userId, isPaid: true })
+      .populate("courseId") // populates the Course details
+      .sort({ createdAt: -1 });
+
+    res.json({ success: true, courses });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error(error.message);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch courses." });
   }
 };

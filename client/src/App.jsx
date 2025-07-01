@@ -8,7 +8,6 @@ import Login from "./components/Login";
 import InstructorLogin from "./components/Instructor/InstructorLogin";
 import InstructorNavBar from "./components/Instructor/InstructorNavbar";
 import CreateCourse from "./Pages/Instructor/CreateCourse";
-import MyCourses from "./Pages/Instructor/MyCourses";
 import EarningsDashboard from "./Pages/Instructor/EarningsDashboard";
 import Reviews from "./Pages/Instructor/Reviews";
 import { useAppContext } from "./context/AppContext";
@@ -16,6 +15,8 @@ import DashBoard from "./Pages/Instructor/DashBoard";
 import Enroll from "./Pages/Enroll";
 import AddAddress from "./Pages/AddAddress";
 import { Toaster } from "react-hot-toast";
+import MyCourses from "./Pages/MyCourses";
+import InstructorCourses from "./Pages/Instructor/InstructorCourses";
 
 function App() {
   const isInstructorPath = useLocation().pathname.includes("instructor");
@@ -33,13 +34,14 @@ function App() {
         <Route path="/courses/:category/:title" element={<CourseDetails />} />
         <Route path="/courses/enroll" element={<Enroll />} />
         <Route path="/add-address" element={<AddAddress />} />
+        <Route path="/user/my-courses" element={<MyCourses />} />
         <Route
           path="/instructor"
           element={isInstructor ? <InstructorNavBar /> : <InstructorLogin />}>
           <Route index element={<DashBoard />} />
           <Route path="dashboard" element={<DashBoard />} />
           <Route path="create-course" element={<CreateCourse />} />
-          <Route path="my-courses" element={<MyCourses />} />
+          <Route path="my-courses" element={<InstructorCourses />} />
           <Route path="earnings" element={<EarningsDashboard />} />
           <Route path="reviews" element={<Reviews />} />
         </Route>

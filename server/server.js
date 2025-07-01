@@ -9,7 +9,7 @@ import connectCloudinary from "./configs/cloudinary.js";
 import courseRouter from "./routes/courseRoutes.js";
 import addressRouter from "./routes/addressRoutes.js";
 import enrollRouter from "./routes/enrollRoutes.js";
-import { stripeWebhooks } from "./controllers/EnrollController.js";
+import { stripeWebhooks } from "./controllers/enrollContoller.js";
 
 const app = express();
 const port = process.env.PORT || 3007;

@@ -8,17 +8,17 @@ const MyCourses = () => {
 
   useEffect(() => {
     const fetchCourses = async () => {
-      try {
-        const { data } = await axios.get("/api/enroll/course");
-        console.log(data.courses);
-        if (data.success) {
-          setPaidCourses(data.courses);
-        } else {
-          toast.error(data.message);
-        }
-      } catch (error) {
-        toast.error(error.message);
-      }
+      // try {
+      //   // const { data } = await axios.get("/api/enroll/course");
+      //   console.log(data.courses);
+      //   if (data.success) {
+      //     setPaidCourses(data.courses);
+      //   } else {
+      //     toast.error(data.message);
+      //   }
+      // } catch (error) {
+      //   toast.error(error.message);
+      // }
     };
 
     fetchCourses();

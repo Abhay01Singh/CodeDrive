@@ -9,7 +9,7 @@ import instructorRouter from "./routes/instructorRoutes.js";
 import courseRouter from "./routes/courseRoutes.js";
 import addressRouter from "./routes/addressRoutes.js";
 import enrollRouter from "./routes/enrollRoutes.js";
-import { stripeWebHooks } from "./controllers/EnrollController.js";
+import { stripeWebHooks } from "./controllers/enrollController.js";
 
 const app = express();
 const port = 3007;

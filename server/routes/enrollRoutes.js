@@ -1,6 +1,6 @@
 import express from "express";
 import authUser from "../middlewares/authUser.js";
-import { enrollStripe } from "../controllers/EnrollController.js";
+import { enrollStripe } from "../controllers/enrollController.js";
 
 const enrollRouter = express.Router();
 

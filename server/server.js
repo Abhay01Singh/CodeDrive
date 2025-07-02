@@ -1,37 +1,39 @@
 import express from "express";
 import cors from "cors";
 import connectDB from "./configs/db.js";
-import userRouter from "./routes/userRoutes.js";
-import "dotenv/config";
 import cookieParser from "cookie-parser";
+import "dotenv/config";
+
+import userRouter from "./routes/userRoutes.js";
 import instructorRouter from "./routes/instructorRoutes.js";
-import connectCloudinary from "./configs/cloudinary.js";
 import courseRouter from "./routes/courseRoutes.js";
 import addressRouter from "./routes/addressRoutes.js";
+import { stripeWebHooks } from "./controllers/EnrollController.js";
 import enrollRouter from "./routes/enrollRoutes.js";
-import { stripeWebhooks } from "./controllers/enrollController.js";
 
 const app = express();
 const port = 3007;
 
 await connectDB();
-await connectCloudinary();
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://codedrive-frontend.onrender.com",
-];
+// Middlewares
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://codedrive-frontend.onrender.com",
+    ],
+    credentials: true,
+  })
+);
 
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+app.post("/stripe", express.raw({ type: "application/json" }), stripeWebHooks);
 
-app.post("/stripe", express.raw({ type: "application/json" }), stripeWebhooks);
-
-// middleware configurations
 app.use(express.json());
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
-  res.send("Welcome to the EduHub API!");
+  res.send("EduHub API Running!");
 });
 
 app.use("/api/user", userRouter);
@@ -41,5 +43,5 @@ app.use("/api/address", addressRouter);
 app.use("/api/enroll", enrollRouter);
 
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server is running at http://localhost:${port}`);
 });

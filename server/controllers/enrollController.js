@@ -1,149 +1,114 @@
-import { v2 as cloudinary } from "cloudinary";
-import Course from "../models/Course.js";
-import User from "../models/User.js";
+// stripe payment: /api/enroll/stripe
+import stripe from "stripe";
 import Enroll from "../models/Enroll.js";
-import Stripe from "stripe";
+import Course from "../models/Course.js";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
-// Enroll course (create Stripe session)
-export const enrollCourse = async (req, res) => {
+export const enrollStripe = async (req, res) => {
   try {
-    const { courses } = req.body;
-    const courseId = courses[0];
+    const { userId, courseId, amount } = req.body;
     const { origin } = req.headers;
-    const userId = req.user.id;
 
-    const userData = await User.findById(userId);
-    const courseData = await Course.findById(courseId);
-
-    if (!userData || !courseData) {
-      return res.json({ success: false, message: "User or Course not found" });
+    // Validate input
+    if (!courseId || !amount || !userId) {
+      return res.json({ success: false, message: "Invalid data" });
     }
 
-    const { price: originalPrice, discount = 0 } = courseData;
-
-    if (originalPrice < 0 || discount < 0 || discount > 100) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid price or discount",
-      });
+    // Fetch course from DB
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.json({ success: false, message: "Course not found" });
     }
 
-    const discountedAmount = (originalPrice * discount) / 100;
-    const finalPrice = Math.round(originalPrice - discountedAmount);
-    const tax = Math.round(finalPrice * 0.02); // 2% tax
-    const totalAmount = finalPrice + tax;
-
-    const newEnroll = await Enroll.create({
-      courseId: courseData._id,
+    // Save enroll data
+    const enroll = await Enroll.create({
       userId,
-      amount: totalAmount,
-      status: "pending",
+      courseId,
+      amount,
       isPaid: false,
     });
 
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items: [
-        {
-          price_data: {
-            currency: "INR",
-            product_data: {
-              name: courseData.title,
-            },
-            unit_amount: totalAmount * 100,
+    const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY);
+
+    const line_items = [
+      {
+        price_data: {
+          currency: "inr",
+          product_data: {
+            name: course.title, // assuming title exists
           },
-          quantity: 1,
+          unit_amount: Math.round(amount * 100), // amount from frontend, e.g. grandTotal
         },
-      ],
+        quantity: 1,
+      },
+    ];
+
+    const session = await stripeInstance.checkout.sessions.create({
+      line_items,
       mode: "payment",
       success_url: `${origin}/user/my-courses`,
       cancel_url: `${origin}/`,
       metadata: {
-        enrollId: newEnroll._id.toString(),
-        userId: userId.toString(),
+        enrollId: enroll._id.toString(),
+        userId,
       },
     });
 
-    res.json({ success: true, session_url: session.url });
+    return res.json({ success: true, url: session.url });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error("Stripe Enroll Error:", error.message);
+    res.json({ success: false, message: error.message });
   }
 };
 
-// Stripe webhook handler
-export const stripeWebhooks = async (req, res) => {
+// stripe webhooks to Verify payments Action : /stripe
+
+export const stripeWebHooks = async (req, res) => {
+  // stripe gateway initialize
+  const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY);
   const sig = req.headers["stripe-signature"];
   let event;
-
   try {
-    event = stripe.webhooks.constructEvent(
+    event = stripeInstance.webhooks.constructEvent(
       req.body,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET
     );
   } catch (error) {
-    return res.status(400).send(`Webhook Error: ${error.message}`);
+    res.status(400).send(`Webhook Error:${error.message}`);
   }
+  // handle event
+  switch (event.type) {
+    case "payment_intent.succeeded": {
+      const paymentIntent = event.data.object;
+      const paymentIntentId = paymentIntent.id;
 
-  try {
-    switch (event.type) {
-      case "checkout.session.completed": {
-        const session = event.data.object;
-        const enrollId = session.metadata.enrollId;
-        const userId = session.metadata.userId;
+      // getting session metadata
+      const session = await stripeInstance.checkout.sessions.list({
+        payment_intent: paymentIntentId,
+      });
 
-        await Enroll.findByIdAndUpdate(enrollId, {
-          isPaid: true,
-          status: "completed",
-        });
+      const { enrollId, userId } = session.data[0].metadata;
 
-        // Clear user's cart if needed (optional)
-        await User.findByIdAndUpdate(userId, { cartItems: {} });
-
-        break;
-      }
-
-      case "checkout.session.expired":
-      case "payment_intent.payment_failed": {
-        const session = event.data.object;
-        const enrollId = session.metadata?.enrollId;
-
-        if (enrollId) {
-          await Enroll.findByIdAndUpdate(enrollId, {
-            status: "failed",
-            isPaid: false,
-          });
-        }
-
-        break;
-      }
-
-      default:
-        console.log(`Unhandled event type: ${event.type}`);
+      // Mark payment as paid
+      await Enroll.findByIdAndUpdate(enrollId, { isPaid: true });
+      break;
     }
+    case "payment_intent.payment_failed": {
+      const paymentIntent = event.data.object;
+      const paymentIntentId = paymentIntent.id;
 
-    res.json({ received: true });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+      // getting session metadata
+      const session = await stripeInstance.checkout.sessions.list({
+        payment_intent: paymentIntentId,
+      });
+
+      const { enrollId } = session.data[0].metadata;
+      await Enroll.findByIdAndDelete(enrollId);
+      break;
+    }
+    default:
+      console.log(`Unhandledd event type ${event.type}`);
+      break;
   }
-};
-
-// Get all paid courses (admin or user)
-export const getPaidCourses = async (req, res) => {
-  try {
-    const userId = req.user.id;
-
-    const courses = await Enroll.find({ userId, isPaid: true })
-      .populate("courseId") // populates the Course details
-      .sort({ createdAt: -1 });
-
-    res.json({ success: true, courses });
-  } catch (error) {
-    console.error(error.message);
-    res
-      .status(500)
-      .json({ success: false, message: "Failed to fetch courses." });
-  }
+  res.json({ received: true });
 };

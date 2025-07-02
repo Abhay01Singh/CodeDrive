@@ -8,7 +8,7 @@ const DashBoard = () => {
   const [bio, setBio] = useState("Instructor at CodeDrive");
   const [profileImage, setProfileImage] = useState(null);
 
-  const { courses } = useAppContext();
+  const { courses, user } = useAppContext();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -109,7 +109,7 @@ const DashBoard = () => {
               <p className="text-sm">Courses Created</p>
             </div>
             <div className="bg-green-100 text-green-800 rounded-lg p-4 text-center shadow">
-              <p className="text-2xl font-bold">320</p>
+              <p className="text-2xl font-bold">{user.length}</p>
               <p className="text-sm">Total Students</p>
             </div>
           </div>

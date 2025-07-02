@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAppContext } from "../context/AppContext";
 import { useLocation } from "react-router-dom";
-import { loadStripe } from "@stripe/stripe-js";
 import toast from "react-hot-toast";
 
 const Enroll = () => {
@@ -46,18 +45,21 @@ const Enroll = () => {
       if (!selectedAddress) return toast.error("Please select an address");
 
       const { data } = await axios.post("/api/enroll/stripe", {
-        courses: [course._id],
+        userId: user?._id,
+        courseId: course?._id,
+        amount: grandTotal,
+        isPaid: false,
       });
 
-      console.log("Enroll API response:", data);
+      console.log("Stripe session response:", data);
 
       if (data.success) {
-        window.location.replace(data.session_url);
+        window.location.replace(data.url); // Or use `data.session_url` based on your backend
       } else {
-        toast.error(data.message);
+        toast.error(data.message || "Failed to initiate payment");
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || error.message);
     }
   };
 

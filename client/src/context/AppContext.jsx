@@ -9,10 +9,11 @@ axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 export const AppContext = createContext();
 export const AppContextProvider = ({ children }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState([]);
   const [isInstructor, setIsInstructor] = useState(false);
   const [showUserLogin, setShowUserLogin] = useState(false);
   const [courses, setCourses] = useState([]);
+  const [earning, setEarning] = useState("");
   const navigate = useNavigate();
 
   // fetch Instructor status

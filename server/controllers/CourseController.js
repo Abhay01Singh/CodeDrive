@@ -27,6 +27,7 @@ export const addCourse = async (req, res) => {
       discount,
       tags,
       duration,
+      videoUrl,
     } = courseData;
 
     if (originalPrice < 0 || discount < 0 || discount > 200) {
@@ -53,6 +54,7 @@ export const addCourse = async (req, res) => {
       duration,
       gst,
       finalPrice,
+      videoUrl,
       image,
     });
 

@@ -109,7 +109,7 @@ const DashBoard = () => {
               <p className="text-sm">Courses Created</p>
             </div>
             <div className="bg-green-100 text-green-800 rounded-lg p-4 text-center shadow">
-              <p className="text-2xl font-bold">{user.length}</p>
+              <p className="text-2xl font-bold">{}</p>
               <p className="text-sm">Total Students</p>
             </div>
           </div>

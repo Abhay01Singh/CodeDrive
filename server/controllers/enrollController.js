@@ -112,3 +112,18 @@ export const stripeWebHooks = async (req, res) => {
   }
   res.json({ received: true });
 };
+
+export const getEnrollCourses = async (req, res) => {
+  try {
+    const userId = req.user.id; // assuming authUser middleware attaches user
+
+    const enrollments = await Enroll.find({ userId, isPaid: true }).populate(
+      "courseId"
+    );
+
+    res.json({ success: true, courses: enrollments });
+  } catch (error) {
+    console.error("Get Courses Error:", error.message);
+    res.json({ success: false, message: "Unable to fetch enrolled courses" });
+  }
+};

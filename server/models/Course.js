@@ -18,7 +18,7 @@ const courseSchema = new mongoose.Schema(
     discount: { type: Number, required: true, min: 0, max: 200 },
     finalPrice: { type: Number, required: true, min: 0 },
     gst: { type: Number, required: true, min: 0 },
-
+    videoUrl: { type: String, required: true },
     image: { type: String, required: true },
   },
   { timestamps: true }

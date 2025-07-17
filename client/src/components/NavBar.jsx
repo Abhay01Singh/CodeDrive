@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
 import { assets } from "../assets/asset";
@@ -54,7 +54,6 @@ const NavBar = () => {
             Contact
           </NavLink>
 
-          {/* Search */}
           <input
             onChange={(e) => setSearchQuery(e.target.value)}
             value={searchQuery}
@@ -63,7 +62,6 @@ const NavBar = () => {
             className="ml-4 px-4 py-1.5 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-300 transition text-sm"
           />
 
-          {/* Auth */}
           {!user ? (
             <button
               onClick={() => setShowUserLogin(true)}
@@ -73,16 +71,25 @@ const NavBar = () => {
           ) : (
             <div className="relative group">
               <img src={assets.profile_icon} className="w-10" alt="" />
-              <ul className="hidden group-hover:block absolute top-10 right-0 bg-white shadow border-gray-200 py-2.5 w-30 rounded-md text-sm z-40">
-                <li
-                  onClick={() => navigate("my-courses")}
-                  className="p-1.5 pl-3 hover:bg-primary/10 cursor-pointer">
-                  My Course
+              <ul className="hidden group-hover:block absolute top-10 right-0 bg-white shadow border-gray-200 py-2.5 w-40 rounded-md text-sm z-40">
+                <li>
+                  <NavLink
+                    to={`/doubt-chat/${user._id}`}
+                    className="block px-4 py-2 hover:bg-gray-100">
+                    Chat with Mentor
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/user/my-courses"
+                    className="block px-4 py-2 hover:bg-gray-100">
+                    My Courses
+                  </NavLink>
                 </li>
                 <li
                   onClick={logout}
-                  className="p-1.5 pl-3 hover:bg-primary/10 cursor-pointer">
-                  LogOut
+                  className="block px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-600">
+                  Logout
                 </li>
               </ul>
             </div>

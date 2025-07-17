@@ -29,7 +29,10 @@ await connectCloudinary();
 // Middlewares
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: [
+      "http://localhost:5173",
+      "https://codedrive-frontend.onrender.com",
+    ],
     credentials: true,
   })
 );
@@ -51,7 +54,10 @@ app.use("/api/doubt", doubtRouter);
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173"],
+    origin: [
+      "http://localhost:5173",
+      "https://codedrive-frontend.onrender.com",
+    ],
     methods: ["GET", "POST"],
     credentials: true,
   },

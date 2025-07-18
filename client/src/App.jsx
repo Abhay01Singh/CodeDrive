@@ -1,4 +1,5 @@
 import { Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
+import { useEffect } from "react";
 import { useAppContext } from "./context/AppContext";
 import { Toaster } from "react-hot-toast";
 
@@ -26,17 +27,32 @@ import InstructorNavBar from "./components/Instructor/InstructorNavbar";
 import Login from "./components/Login";
 import InstructorLogin from "./components/Instructor/InstructorLogin";
 
-// Instructor Layout Wrapper
+// Layout wrapper for instructor pages
 const InstructorLayout = () => (
   <>
     <InstructorNavBar />
+    <Outlet />
   </>
 );
 
 function App() {
-  const { showUserLogin, isInstructor } = useAppContext();
+  const { showUserLogin, isInstructor, setIsInstructor, setUser } =
+    useAppContext();
   const location = useLocation();
   const isInstructorPath = location.pathname.startsWith("/instructor");
+
+  // Load saved session from localStorage (auto-login)
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    const savedIsInstructor = localStorage.getItem("isInstructor");
+
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+    if (savedIsInstructor === "true") {
+      setIsInstructor(true);
+    }
+  }, []);
 
   return (
     <div className="text-default min-h-screen text-gray-700 bg-white">
@@ -45,7 +61,7 @@ function App() {
       <Toaster />
 
       <Routes>
-        {/* Public Routes */}
+        {/* Public Student Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/courses" element={<AllCourse />} />
         <Route path="/courses/:category" element={<CourseCategory />} />
@@ -68,19 +84,26 @@ function App() {
             }
           />
 
-          {isInstructor && (
-            <Route element={<InstructorLayout />}>
-              <Route path="dashboard" element={<DashBoard />} />
-              <Route path="create-course" element={<CreateCourse />} />
-              <Route path="my-courses" element={<InstructorCourses />} />
-              <Route path="earnings" element={<EarningsDashboard />} />
-              <Route path="reviews" element={<Reviews />} />
-              <Route path="chat/:roomId" element={<MentorChat />} />
-            </Route>
-          )}
+          {/* Protected routes only accessible if isInstructor is true */}
+          <Route
+            element={
+              isInstructor ? (
+                <InstructorLayout />
+              ) : (
+                <Navigate to="/instructor" />
+              )
+            }>
+            <Route path="dashboard" element={<DashBoard />} />
+            <Route path="create-course" element={<CreateCourse />} />
+            <Route path="my-courses" element={<InstructorCourses />} />
+            <Route path="earnings" element={<EarningsDashboard />} />
+            <Route path="reviews" element={<Reviews />} />
+            <Route path="chat/:roomId" element={<MentorChat />} />
+          </Route>
         </Route>
       </Routes>
     </div>
   );
 }
+
 export default App;

@@ -1,3 +1,5 @@
+// src/pages/instructor/MentorChat.jsx
+
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import io from "socket.io-client";
@@ -9,28 +11,27 @@ const MentorChat = () => {
   const { user, axios } = useAppContext();
   const [messages, setMessages] = useState([]);
   const [newMsg, setNewMsg] = useState("");
-  const [socket, setSocket] = useState(null);
+  const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    const newSocket = io("https://codedrive-backend-i3vs.onrender.com", {
+    const socket = io(import.meta.env.VITE_BACKEND_URL, {
       withCredentials: true,
     });
+    socketRef.current = socket;
 
-    newSocket.on("connect", () => {
-      newSocket.emit("joinRoom", roomId);
+    socket.on("connect", () => {
+      socket.emit("joinRoom", roomId);
     });
 
-    newSocket.on("message", (msg) => {
+    socket.on("message", (msg) => {
       setMessages((prev) => [...prev, msg]);
       scrollToBottom();
     });
 
-    setSocket(newSocket);
-
     return () => {
-      newSocket.emit("leaveRoom", roomId);
-      newSocket.disconnect();
+      socket.emit("leaveRoom", roomId);
+      socket.disconnect();
     };
   }, [roomId]);
 
@@ -56,7 +57,7 @@ const MentorChat = () => {
 
   const sendMessage = (e) => {
     e.preventDefault();
-    if (!newMsg.trim() || !socket) return;
+    if (!newMsg.trim()) return;
 
     const msg = {
       roomId,
@@ -66,7 +67,7 @@ const MentorChat = () => {
       timestamp: new Date().toISOString(),
     };
 
-    socket.emit("message", msg);
+    socketRef.current?.emit("message", msg);
     setNewMsg("");
   };
 
@@ -84,11 +85,13 @@ const MentorChat = () => {
             <div
               key={index}
               className={`flex ${
-                msg.isMentor ? "justify-end" : "justify-start"
+                msg.sender === user?.name ? "justify-end" : "justify-start"
               }`}>
               <div
                 className={`max-w-[70%] rounded-lg p-3 ${
-                  msg.isMentor ? "bg-indigo-100 text-indigo-900" : "bg-gray-100"
+                  msg.sender === user?.name
+                    ? "bg-indigo-100 text-indigo-900"
+                    : "bg-gray-100"
                 }`}>
                 <p className="text-xs font-semibold text-gray-600">
                   {msg.sender} {msg.isMentor && "(Mentor)"}

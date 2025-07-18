@@ -1,37 +1,36 @@
-// src/pages/instructor/MentorChat.jsx
-
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import io from "socket.io-client";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 
+const SOCKET_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3007";
+
 const MentorChat = () => {
   const { roomId } = useParams();
   const { user, axios } = useAppContext();
   const [messages, setMessages] = useState([]);
   const [newMsg, setNewMsg] = useState("");
-  const socketRef = useRef(null);
+  const [socket, setSocket] = useState(null);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    const socket = io(import.meta.env.VITE_BACKEND_URL, {
-      withCredentials: true,
-    });
-    socketRef.current = socket;
+    const newSocket = io(SOCKET_URL, { withCredentials: true });
 
-    socket.on("connect", () => {
-      socket.emit("joinRoom", roomId);
+    newSocket.on("connect", () => {
+      newSocket.emit("joinRoom", roomId);
     });
 
-    socket.on("message", (msg) => {
+    newSocket.on("message", (msg) => {
       setMessages((prev) => [...prev, msg]);
       scrollToBottom();
     });
 
+    setSocket(newSocket);
+
     return () => {
-      socket.emit("leaveRoom", roomId);
-      socket.disconnect();
+      newSocket.emit("leaveRoom", roomId);
+      newSocket.disconnect();
     };
   }, [roomId]);
 
@@ -57,7 +56,7 @@ const MentorChat = () => {
 
   const sendMessage = (e) => {
     e.preventDefault();
-    if (!newMsg.trim()) return;
+    if (!newMsg.trim() || !socket) return;
 
     const msg = {
       roomId,
@@ -67,7 +66,7 @@ const MentorChat = () => {
       timestamp: new Date().toISOString(),
     };
 
-    socketRef.current?.emit("message", msg);
+    socket.emit("message", msg);
     setNewMsg("");
   };
 
@@ -85,13 +84,11 @@ const MentorChat = () => {
             <div
               key={index}
               className={`flex ${
-                msg.sender === user?.name ? "justify-end" : "justify-start"
+                msg.isMentor ? "justify-end" : "justify-start"
               }`}>
               <div
                 className={`max-w-[70%] rounded-lg p-3 ${
-                  msg.sender === user?.name
-                    ? "bg-indigo-100 text-indigo-900"
-                    : "bg-gray-100"
+                  msg.isMentor ? "bg-indigo-100 text-indigo-900" : "bg-gray-100"
                 }`}>
                 <p className="text-xs font-semibold text-gray-600">
                   {msg.sender} {msg.isMentor && "(Mentor)"}

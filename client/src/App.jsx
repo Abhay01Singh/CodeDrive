@@ -27,14 +27,6 @@ import InstructorNavBar from "./components/Instructor/InstructorNavbar";
 import Login from "./components/Login";
 import InstructorLogin from "./components/Instructor/InstructorLogin";
 
-// Layout wrapper for instructor pages
-const InstructorLayout = () => (
-  <>
-    <InstructorNavBar />
-    <Outlet />
-  </>
-);
-
 function App() {
   const { showUserLogin, isInstructor, setIsInstructor, setUser } =
     useAppContext();
@@ -84,22 +76,19 @@ function App() {
             }
           />
 
-          {/* Protected routes only accessible if isInstructor is true */}
-          <Route
-            element={
-              isInstructor ? (
-                <InstructorLayout />
-              ) : (
-                <Navigate to="/instructor" />
-              )
-            }>
-            <Route path="dashboard" element={<DashBoard />} />
-            <Route path="create-course" element={<CreateCourse />} />
-            <Route path="my-courses" element={<InstructorCourses />} />
-            <Route path="earnings" element={<EarningsDashboard />} />
-            <Route path="reviews" element={<Reviews />} />
-            <Route path="chat/:roomId" element={<MentorChat />} />
-          </Route>
+          {/* Protected Instructor Routes */}
+          {isInstructor ? (
+            <Route element={<InstructorNavBar />}>
+              <Route path="dashboard" element={<DashBoard />} />
+              <Route path="create-course" element={<CreateCourse />} />
+              <Route path="my-courses" element={<InstructorCourses />} />
+              <Route path="earnings" element={<EarningsDashboard />} />
+              <Route path="reviews" element={<Reviews />} />
+              <Route path="chat/:roomId" element={<MentorChat />} />
+            </Route>
+          ) : (
+            <Route path="*" element={<Navigate to="/instructor" />} />
+          )}
         </Route>
       </Routes>
     </div>

@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import io from "socket.io-client";
-import { useAppContext } from "../../context/AppContext";
+import { useAppContext } from "../context/AppContext";
 
 const ChatRoom = () => {
   const { roomId } = useParams();

@@ -36,6 +36,12 @@ const NavBar = () => {
           EduHub
         </NavLink>
 
+        <NavLink
+          to="/code-editor"
+          className="text-gray-600 hover:text-indigo-600 font-medium transition">
+          Editor
+        </NavLink>
+
         {/* Desktop Menu */}
         <nav className="hidden md:flex items-center space-x-8">
           <NavLink

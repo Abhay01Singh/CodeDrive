@@ -26,6 +26,7 @@ import NavBar from "./components/NavBar";
 import InstructorNavBar from "./components/Instructor/InstructorNavbar";
 import Login from "./components/Login";
 import InstructorLogin from "./components/Instructor/InstructorLogin";
+import CodeEditor from "./components/CodeEditor";
 
 function App() {
   const { showUserLogin, isInstructor, setIsInstructor, setUser } =
@@ -62,6 +63,7 @@ function App() {
         <Route path="/add-address" element={<AddAddress />} />
         <Route path="/user/my-courses" element={<MyCourses />} />
         <Route path="/doubt-chat/:roomId" element={<ChatRoom />} />
+        <Route path="/code-editor" element={<CodeEditor />} />
 
         {/* Instructor Routes */}
         <Route path="/instructor">
@@ -76,7 +78,6 @@ function App() {
             }
           />
 
-          {/* Protected Instructor Routes */}
           {isInstructor ? (
             <Route element={<InstructorNavBar />}>
               <Route path="dashboard" element={<DashBoard />} />

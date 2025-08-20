@@ -4,8 +4,6 @@ import io from "socket.io-client";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 
-const SOCKET_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3007";
-
 const MentorChat = () => {
   const { roomId } = useParams();
   const { user, axios } = useAppContext();
@@ -15,7 +13,7 @@ const MentorChat = () => {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    const newSocket = io(SOCKET_URL, { withCredentials: true });
+    const newSocket = io("http://localhost:3007", { withCredentials: true });
 
     newSocket.on("connect", () => {
       newSocket.emit("joinRoom", roomId);

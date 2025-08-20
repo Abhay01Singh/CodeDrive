@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useAppContext } from "../context/AppContext";
 import { useParams } from "react-router-dom";
-import { courseCategories, dummyCourses } from "../assets/asset";
+import { courseCategories } from "../assets/asset";
 import CourseCard from "../components/CourseCard";
 import { slugify } from "../utils/slugify";
 

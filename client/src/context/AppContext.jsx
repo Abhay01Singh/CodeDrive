@@ -66,7 +66,7 @@ export const AppContextProvider = ({ children }) => {
       if (data.success) {
         setAllUsers(data.users);
       } else {
-        console.log(data.message);
+        toast.error(data.message);
       }
     } catch (error) {
       toast.error(error.message);

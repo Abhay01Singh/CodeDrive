@@ -11,13 +11,12 @@ import { Server } from "socket.io";
 import userRouter from "./routes/userRoutes.js";
 import instructorRouter from "./routes/instructorRoutes.js";
 import courseRouter from "./routes/courseRoutes.js";
-import addressRouter from "./routes/addressRoutes.js";
 import enrollRouter from "./routes/enrollRoutes.js";
 import doubtRouter from "./routes/doubtRoutes.js";
 import { saveMessage } from "./controllers/doubtController.js";
 
-// Controllers
-import { stripeWebHooks } from "./controllers/enrollController.js";
+import chatRouter from "./routes/chatAIRoutes.js";
+import { razorpayWebHook } from "./controllers/enrollController.js";
 
 const app = express();
 const port = 3007;
@@ -25,6 +24,12 @@ const port = 3007;
 // Connect DB and Cloudinary
 await connectDB();
 await connectCloudinary();
+
+app.post(
+  "/razorpay/webhook",
+  express.json({ type: "application/json" }),
+  razorpayWebHook
+);
 
 // Middlewares
 app.use(
@@ -39,25 +44,19 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-// Stripe webhook
-app.post("/stripe", express.raw({ type: "application/json" }), stripeWebHooks);
-
 // Routes
 app.use("/api/user", userRouter);
 app.use("/api/instructor", instructorRouter);
 app.use("/api/course", courseRouter);
-app.use("/api/address", addressRouter);
 app.use("/api/enroll", enrollRouter);
 app.use("/api/doubt", doubtRouter);
+app.use("/api", chatRouter);
 
 // Create HTTP + Socket.IO server
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: [
-      "http://localhost:5173",
-      "https://codedrive-frontend.onrender.com",
-    ],
+    origin: ["http://localhost:5173"],
     methods: ["GET", "POST"],
     credentials: true,
   },

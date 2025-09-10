@@ -9,7 +9,6 @@ import AllCourse from "./Pages/AllCourse";
 import CourseCategory from "./Pages/CourseCategory";
 import CourseDetails from "./Pages/CourseDetails";
 import Enroll from "./Pages/Enroll";
-import AddAddress from "./Pages/AddAddress";
 import MyCourses from "./Pages/MyCourses";
 import ChatRoom from "./Pages/ChatRoom";
 
@@ -27,6 +26,7 @@ import InstructorNavBar from "./components/Instructor/InstructorNavbar";
 import Login from "./components/Login";
 import InstructorLogin from "./components/Instructor/InstructorLogin";
 import CodeEditor from "./components/CodeEditor";
+import ChatbotWidget from "./components/ChatbotWidget";
 
 function App() {
   const { showUserLogin, isInstructor, setIsInstructor, setUser } =
@@ -60,7 +60,6 @@ function App() {
         <Route path="/courses/:category" element={<CourseCategory />} />
         <Route path="/courses/:category/:title" element={<CourseDetails />} />
         <Route path="/courses/enroll" element={<Enroll />} />
-        <Route path="/add-address" element={<AddAddress />} />
         <Route path="/user/my-courses" element={<MyCourses />} />
         <Route path="/doubt-chat/:roomId" element={<ChatRoom />} />
         <Route path="/code-editor" element={<CodeEditor />} />
@@ -92,6 +91,7 @@ function App() {
           )}
         </Route>
       </Routes>
+      <ChatbotWidget />
     </div>
   );
 }

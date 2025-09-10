@@ -4,6 +4,7 @@ import Course from "../models/Course.js";
 // Add Course : POST /api/course/add
 export const addCourse = async (req, res) => {
   try {
+    // why parse here? because we are sending form data
     const courseData = JSON.parse(req.body.courseData);
     const { thumbnail } = req.files;
 

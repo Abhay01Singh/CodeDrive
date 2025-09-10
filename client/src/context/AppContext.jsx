@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios, { all } from "axios";
 import toast from "react-hot-toast";
 
 axios.defaults.withCredentials = true;
@@ -13,7 +13,8 @@ export const AppContextProvider = ({ children }) => {
   const [isInstructor, setIsInstructor] = useState(false);
   const [showUserLogin, setShowUserLogin] = useState(false);
   const [courses, setCourses] = useState([]);
-  const [earning, setEarning] = useState("");
+  const [earning, setEarning] = useState(0);
+  const [allUsers, setAllUsers] = useState([]);
   const navigate = useNavigate();
 
   // fetch Instructor status
@@ -58,10 +59,42 @@ export const AppContextProvider = ({ children }) => {
     }
   };
 
+  // get all user
+  const fetchAllUsers = async () => {
+    try {
+      const { data } = await axios.get("/api/user/all-users");
+      if (data.success) {
+        setAllUsers(data.users);
+      } else {
+        console.log(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  // get earnings
+  const getEarnings = async () => {
+    try {
+      let total = 0;
+      const { data } = await axios.get("/api/enroll/courses");
+      if (data.success) {
+        data.courses.forEach((enroll) => {
+          total += enroll.courseId.price;
+        });
+        setEarning(total);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   useEffect(() => {
     fetchUser();
     fetchInstructor();
     fetchCourses();
+    fetchAllUsers();
+    getEarnings();
   }, []);
 
   const value = {
@@ -78,6 +111,8 @@ export const AppContextProvider = ({ children }) => {
     setCourses,
     axios,
     fetchCourses,
+    allUsers,
+    earning,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

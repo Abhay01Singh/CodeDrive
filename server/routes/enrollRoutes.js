@@ -1,13 +1,13 @@
 import express from "express";
 import authUser from "../middlewares/authUser.js";
 import {
-  enrollStripe,
+  enrollRazorpay,
   getEnrollCourses,
 } from "../controllers/enrollController.js";
 
 const enrollRouter = express.Router();
 
-enrollRouter.post("/stripe", authUser, enrollStripe);
+enrollRouter.post("/razorpay", authUser, enrollRazorpay);
 enrollRouter.get("/courses", authUser, getEnrollCourses);
 
 export default enrollRouter;

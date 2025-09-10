@@ -1,4 +1,3 @@
-import express from "express";
 import jwt from "jsonwebtoken";
 
 const authUser = (req, res, next) => {

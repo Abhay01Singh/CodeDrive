@@ -4,10 +4,7 @@ import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const Enroll = () => {
-  const [addresses, setAddresses] = useState([]);
-  const [showAddress, setShowAddress] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState(null);
-  const currency = "$";
+  const currency = "₹"; // Razorpay supports INR
 
   const { axios, user, navigate } = useAppContext();
   const location = useLocation();
@@ -24,48 +21,69 @@ const Enroll = () => {
   const tax = (totalPrice * 2) / 100;
   const grandTotal = totalPrice + tax;
 
-  const getUserAddress = async () => {
-    try {
-      const { data } = await axios.get("/api/address/get");
-      if (data.success) {
-        setAddresses(data.addresses);
-        if (data.addresses.length > 0) {
-          setSelectedAddress(data.addresses[0]);
-        }
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error("Error fetching address");
-    }
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
   };
 
   const placeOrder = async () => {
     try {
-      if (!selectedAddress) return toast.error("Please select an address");
+      // Call backend to create Razorpay order
+      console.log("User from context:", user);
+      console.log("Sending:", {
+        userId: user?._id,
+        courseId: course?._id,
+        amount: grandTotal,
+      });
 
-      const { data } = await axios.post("/api/enroll/stripe", {
+      const { data } = await axios.post("/api/enroll/razorpay", {
         userId: user?._id,
         courseId: course?._id,
         amount: grandTotal,
         isPaid: false,
       });
 
-      console.log("Stripe session response:", data);
-
-      if (data.success) {
-        window.location.replace(data.url); // Or use `data.session_url` based on your backend
-      } else {
-        toast.error(data.message || "Failed to initiate payment");
+      if (!data.success) {
+        return toast.error(data.message || "Failed to initiate payment");
       }
+
+      const res = await loadRazorpay();
+      if (!res) {
+        toast.error("Razorpay SDK failed to load. Are you online?");
+        return;
+      }
+
+      const options = {
+        key: data.key, // from backend
+        amount: data.amount,
+        currency: data.currency,
+        name: "Course Enrollment",
+        description: course?.title,
+        order_id: data.orderId,
+        handler: function (response) {
+          toast.success("Payment successful!");
+          navigate("/user/my-courses");
+        },
+        prefill: {
+          name: user?.name,
+          email: user?.email,
+        },
+        theme: {
+          color: "#4F46E5",
+        },
+      };
+
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
     } catch (error) {
       toast.error(error.response?.data?.message || error.message);
     }
   };
-
-  useEffect(() => {
-    getUserAddress();
-  }, []);
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-50 px-4 pt-12">
@@ -73,59 +91,6 @@ const Enroll = () => {
         <h2 className="text-3xl font-bold text-indigo-700 mb-6 text-center">
           Order Summary
         </h2>
-
-        <div className="mb-6">
-          <p className="text-sm font-medium text-gray-600">Selected Course:</p>
-          <p className="text-xl font-semibold text-gray-800">{course?.title}</p>
-        </div>
-
-        <div className="mb-8">
-          <p className="text-base font-semibold uppercase text-gray-600 mb-2">
-            Delivery Address
-          </p>
-          <div className="relative mt-1">
-            <div className="flex justify-between items-start text-gray-800">
-              <p className="text-base w-[80%]">
-                {selectedAddress
-                  ? `${selectedAddress.street}, ${selectedAddress.city}, ${selectedAddress.state}, ${selectedAddress.country}`
-                  : "No Address Selected"}
-              </p>
-              <button
-                onClick={() => setShowAddress(!showAddress)}
-                className="cursor-pointer text-indigo-600 font-medium hover:underline ml-2 text-sm">
-                Change
-              </button>
-            </div>
-
-            {showAddress && (
-              <div className="absolute z-10 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto text-base">
-                {addresses.length > 0 ? (
-                  addresses.map((address, index) => (
-                    <p
-                      key={index}
-                      onClick={() => {
-                        setSelectedAddress(address);
-                        setShowAddress(false);
-                      }}
-                      className="p-3 text-gray-700 hover:bg-gray-100 cursor-pointer">
-                      {address.street}, {address.city}, {address.state},{" "}
-                      {address.country}
-                    </p>
-                  ))
-                ) : (
-                  <p className="p-3 text-center text-gray-500">
-                    No addresses available
-                  </p>
-                )}
-                <p
-                  onClick={() => navigate("/add-address")}
-                  className="text-indigo-600 text-center cursor-pointer p-3 hover:bg-indigo-50 border-t border-gray-200">
-                  + Add New Address
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
 
         <div className="mb-8">
           <p className="text-base font-semibold uppercase text-gray-600 mb-2">

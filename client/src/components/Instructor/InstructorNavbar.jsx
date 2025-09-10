@@ -18,14 +18,12 @@ const InstructorNavBar = () => {
   const [latestRoomId, setLatestRoomId] = useState(null);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // Fetch chat rooms and unread messages
   useEffect(() => {
     const fetchChatRooms = async () => {
       try {
         const { data } = await axios.get("/api/doubt/rooms");
         if (data.success && data.rooms.length > 0) {
-          setLatestRoomId(data.rooms[0]._id);
-          // Calculate total unread messages
+          setLatestRoomId(data.rooms._id);
           const totalUnread = data.rooms.reduce(
             (sum, room) => sum + (room.unreadCount || 0),
             0
@@ -37,10 +35,8 @@ const InstructorNavBar = () => {
       }
     };
 
-    // Initial fetch
     fetchChatRooms();
 
-    // Set up polling every 30 seconds
     const interval = setInterval(fetchChatRooms, 30000);
     return () => clearInterval(interval);
   }, [axios]);
@@ -97,34 +93,45 @@ const InstructorNavBar = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white border-b px-6 py-4 shadow flex justify-between items-center">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white">
+      <nav className="bg-white/90 backdrop-blur-lg shadow-md border-b border-indigo-200 px-8 py-4 flex justify-between items-center sticky top-0 z-50">
         <h1
-          className="text-xl font-bold text-indigo-600 cursor-pointer"
-          onClick={() => navigate("/instructor/dashboard")}>
+          className="text-2xl font-extrabold text-indigo-700 cursor-pointer select-none transition-transform hover:scale-105"
+          onClick={() => navigate("/instructor/dashboard")}
+          aria-label="Go to Instructor Dashboard"
+          tabIndex={0}
+          onKeyPress={(e) =>
+            e.key === "Enter" && navigate("/instructor/dashboard")
+          }>
           Instructor Panel
         </h1>
-        <ul className="flex gap-6 text-sm font-medium items-center">
+
+        <ul className="flex gap-8 text-sm font-semibold items-center">
           {navItems.map((item) => (
             <li key={item.label}>
               <NavLink
                 to={item.path}
                 className={({ isActive }) =>
-                  `flex items-center gap-2 px-3 py-2 rounded-md transition ${
-                    isActive
-                      ? "bg-indigo-100 text-indigo-700"
-                      : "hover:bg-gray-100"
-                  }`
+                  `flex items-center gap-2 px-4 py-2 rounded-lg transition-colors
+                   ${
+                     isActive
+                       ? "bg-indigo-100 text-indigo-700 shadow-inner"
+                       : "text-gray-700 hover:bg-indigo-50 hover:text-indigo-700"
+                   }`
+                }
+                title={item.label}
+                aria-current={({ isActive }) =>
+                  isActive ? "page" : undefined
                 }>
-                <span className="relative">
+                <span className="relative text-lg">
                   {item.icon}
                   {item.badge && (
-                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center shadow-lg">
                       {item.badge}
                     </span>
                   )}
                 </span>
-                {item.label}
+                <span className="hidden md:inline">{item.label}</span>
               </NavLink>
             </li>
           ))}
@@ -132,15 +139,18 @@ const InstructorNavBar = () => {
           <li>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 px-3 py-2 rounded-md text-red-600 hover:bg-red-100 transition">
-              <FaSignOutAlt /> Logout
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-red-600 hover:bg-red-100 transition focus:outline-none focus:ring-2 focus:ring-red-400"
+              aria-label="Logout">
+              <FaSignOutAlt />
+              <span className="hidden md:inline font-semibold">Logout</span>
             </button>
           </li>
         </ul>
       </nav>
-      <div className="p-6">
+
+      <main className="p-8">
         <Outlet />
-      </div>
+      </main>
     </div>
   );
 };

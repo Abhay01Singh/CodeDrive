@@ -13,7 +13,7 @@ const MentorChat = () => {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:3007", {
+    const newSocket = io("https://codedrive-backend-gscb.onrender.com", {
       withCredentials: true,
     });
 

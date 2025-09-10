@@ -15,11 +15,14 @@ export default function Chatbot() {
     setLoading(true);
 
     // Call backend (update API endpoint as needed)
-    const res = await fetch("http://localhost:3007/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: input }),
-    });
+    const res = await fetch(
+      "https://codedrive-backend-gscb.onrender.com/api/chat",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input }),
+      }
+    );
     const data = await res.json();
     const botMsg = { role: "bot", text: data.reply };
     setMessages((prev) => [...prev, botMsg]);

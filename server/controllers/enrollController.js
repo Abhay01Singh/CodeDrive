@@ -115,3 +115,17 @@ export const razorpayWebHook = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+export const getEnrollCourses = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const enrollments = await Enroll.find({ userId, isPaid: true }).populate(
+      "courseId"
+    );
+    const courses = enrollments.map((enroll) => enroll.courseId);
+    res.json({ success: true, courses });
+  } catch (error) {
+    console.error("Get Enroll Courses Error:", error.message);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

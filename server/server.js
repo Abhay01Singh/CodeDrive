@@ -34,6 +34,10 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
+app.use((req, res) => {
+  res.send("API IS running");
+});
+
 // Routes
 app.use("/api/user", userRouter);
 app.use("/api/instructor", instructorRouter);

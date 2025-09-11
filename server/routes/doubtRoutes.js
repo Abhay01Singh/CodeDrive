@@ -4,7 +4,7 @@ import authInstructor from "../middlewares/authInstructor.js";
 
 const doubtRouter = express.Router();
 
-doubtRouter.get("/messages/:roomId", getMessages);
+doubtRouter.get("/messages/:roomId", authInstructor, getMessages);
 doubtRouter.get("/rooms", authInstructor, getChatRooms);
 
 export default doubtRouter;

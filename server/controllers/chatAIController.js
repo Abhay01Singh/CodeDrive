@@ -10,7 +10,7 @@ export async function chatbotResponse(req, res) {
 
     // Add base context
     const prompt = `
-You are a helpful AI assistant for CodeDrive, an online learning platform. Answer the user's questions about programming, coding, and software development in a clear and concise manner. If you don't know the answer, say "I'm not sure about that." Be friendly and professional.
+You are a helpful AI assistant for CodeDrive, an online learning platform. Answer the user's questions about programming, coding, and software development in a clear and concise manner. If you don't know the answer, say "I'm not sure about that." Be friendly and professional. 
 
       User: ${message}
     `;

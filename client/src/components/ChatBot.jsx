@@ -45,7 +45,7 @@ export default function Chatbot() {
   }, [messages, loading]);
 
   return (
-    <div className="min-h-[80vh] flex flex-col bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-3xl shadow-xl overflow-hidden">
+    <div className="min-h-[85vh] max-h-[80vh] flex flex-col bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-3xl shadow-xl overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-indigo-600 to-purple-500 text-white text-center py-5 text-2xl font-extrabold shadow-md">
         💬 CodeDrive Chatbot

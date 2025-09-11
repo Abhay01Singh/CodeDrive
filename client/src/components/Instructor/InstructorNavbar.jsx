@@ -22,8 +22,9 @@ const InstructorNavBar = () => {
     const fetchChatRooms = async () => {
       try {
         const { data } = await axios.get("/api/doubt/rooms");
-        if (data.success && data.rooms.length > 0) {
-          setLatestRoomId(data.rooms._id);
+        console.log(data);
+        if (data.success) {
+          setLatestRoomId(data.rooms[0]._id);
           const totalUnread = data.rooms.reduce(
             (sum, room) => sum + (room.unreadCount || 0),
             0

@@ -8,7 +8,7 @@ const AVATAR_STUDENT =
 const AVATAR_MENTOR =
   "https://ui-avatars.com/api/?name=Mentor&background=6366f1&color=fff&size=48";
 
-const socket = io(process.env.VITE_BACKEND_URL); // adjust to your backend
+const socket = io(import.meta.env.VITE_BACKEND_URL); // adjust to your backend
 
 const ChatRoom = () => {
   const { roomId } = useParams();

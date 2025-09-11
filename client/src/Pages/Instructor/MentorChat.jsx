@@ -18,7 +18,7 @@ const MentorChat = () => {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    const newSocket = io(process.env.VITE_BACKEND_URL, {
+    const newSocket = io(import.meta.env.VITE_BACKEND_URL, {
       withCredentials: true,
     });
     newSocket.on("connect", () => newSocket.emit("joinRoom", roomId));

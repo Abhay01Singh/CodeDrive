@@ -27,7 +27,7 @@ await connectCloudinary();
 // Middlewares
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173", "https://codedrive-rd4t.onrender.com"],
     credentials: true,
   })
 );
@@ -46,7 +46,7 @@ app.use("/", chatRouter);
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173", "https://codedrive-rd4t.onrender.com"],
     methods: ["GET", "POST"],
     credentials: true,
   },

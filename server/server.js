@@ -16,7 +16,6 @@ import doubtRouter from "./routes/doubtRoutes.js";
 import { saveMessage } from "./controllers/doubtController.js";
 
 import chatRouter from "./routes/chatAIRoutes.js";
-import { razorpayWebHook } from "./controllers/enrollController.js";
 
 const app = express();
 const port = 3007;
@@ -25,28 +24,15 @@ const port = 3007;
 await connectDB();
 await connectCloudinary();
 
-app.post(
-  "/razorpay/webhook",
-  express.json({ type: "application/json" }),
-  razorpayWebHook
-);
-
 // Middlewares
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://codedrive-frontend.onrender.com",
-    ],
+    origin: ["http://localhost:5173"],
     credentials: true,
   })
 );
 app.use(express.json());
 app.use(cookieParser());
-
-app.use("/", (req, res) => {
-  res.send("API is running....");
-});
 
 // Routes
 app.use("/api/user", userRouter);
@@ -54,16 +40,13 @@ app.use("/api/instructor", instructorRouter);
 app.use("/api/course", courseRouter);
 app.use("/api/enroll", enrollRouter);
 app.use("/api/doubt", doubtRouter);
-app.use("/api", chatRouter);
+app.use("/", chatRouter);
 
 // Create HTTP + Socket.IO server
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: [
-      "http://localhost:5173",
-      "https://codedrive-frontend.onrender.com",
-    ],
+    origin: ["http://localhost:5173"],
     methods: ["GET", "POST"],
     credentials: true,
   },

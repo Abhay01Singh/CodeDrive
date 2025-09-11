@@ -5,7 +5,7 @@ import { slugify } from "../utils/slugify";
 
 const CourseDetails = () => {
   const { category, title } = useParams();
-  const { courses, navigate } = useAppContext();
+  const { courses, navigate, user } = useAppContext();
 
   const course = courses.find(
     (c) => slugify(c.category) === category && slugify(c.title) === title
@@ -18,6 +18,7 @@ const CourseDetails = () => {
       </div>
     );
   }
+
   return (
     <section className="bg-gray-50 min-h-screen py-16 px-6">
       <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">

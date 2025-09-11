@@ -91,6 +91,7 @@ export const isAuth = async (req, res) => {
     return res.json({
       success: true,
       user,
+      messgae: "auth is completed",
     });
   } catch (error) {
     console.log(error.message);
@@ -116,7 +117,7 @@ export const logout = async (req, res) => {
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select("-password");
-    res.json({ success: true, users });
+    res.json({ success: true, users, message: "fetch all users" });
   } catch (error) {
     console.log(error.message);
     res.json({ success: false, message: error.message });

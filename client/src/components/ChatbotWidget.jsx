@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Chatbot from "./ChatBot";
+import Chatbot from "../components/ChatBot";
 
 export default function ChatbotWidget() {
   const [open, setOpen] = useState(false);
@@ -8,17 +8,39 @@ export default function ChatbotWidget() {
     <>
       {/* Floating Chat Button */}
       <button
-        onClick={() => setOpen(!open)} // Toggle the open state
-        className="fixed bottom-6 right-6 bg-blue-600 rounded-full p-4 shadow-lg text-white hover:bg-blue-700">
+        onClick={() => setOpen((o) => !o)}
+        aria-label={open ? "Close chat" : "Open chat"}
+        className={`
+          fixed bottom-7 right-7 z-50 
+          bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 
+          hover:from-purple-700 hover:via-indigo-700 hover:to-blue-700
+          text-white rounded-full p-4 shadow-lg 
+          transition-transform duration-300 ease-in-out
+          hover:scale-110 focus:outline-none cursor
+        `}>
         💬
       </button>
 
-      {/* Only show chat window when 'open' is true */}
+      {/* Chat Window */}
       {open && (
-        <div className="fixed bottom-20 right-6 w-80 bg-white/70 backdrop-blur-xl shadow-2xl rounded-xl overflow-hidden">
+        <div
+          className="
+            fixed bottom-22 right-8 w-full max-w-xl bg-white/80 backdrop-blur-xl shadow-2xl rounded-3xl border border-indigo-200 overflow-hidden z-60 animate-fade-in ring-1 ring-indigo-300/60 transition-shadow duration-300 hover:shadow-indigo-400/40 cursor
+          ">
           <Chatbot />
         </div>
       )}
+
+      {/* Fade-in animation for chat */}
+      <style>{`
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(30px);}
+          to { opacity: 1; transform: translateY(0);}
+        }
+        .animate-fade-in {
+          animation: fade-in 0.35s cubic-bezier(.4,0,.2,1);
+        }
+      `}</style>
     </>
   );
 }

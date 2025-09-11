@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import io from "socket.io-client";
 import { useAppContext } from "../context/AppContext";
 
-const socket = io("https://codedrive-backend-gscb.onrender.com"); // adjust to your backend
+const socket = io("http://localhost:3007"); // adjust to your backend
 
 const ChatRoom = () => {
   const { roomId } = useParams();

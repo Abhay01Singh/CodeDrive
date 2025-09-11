@@ -45,7 +45,7 @@ const NavBar = () => {
             drop-shadow-lg transition-transform 
             hover:scale-105 hover:text-purple-700
           ">
-          EduHub
+          CodeDrive
         </NavLink>
 
         <NavLink

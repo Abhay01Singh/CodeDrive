@@ -76,13 +76,9 @@ export const AppContextProvider = ({ children }) => {
   // get earnings
   const getEarnings = async () => {
     try {
-      let total = 0;
-      const { data } = await axios.get("/api/enroll/courses");
+      const { data } = await axios.get("/api/enroll/earning");
       if (data.success) {
-        data.courses.forEach((enroll) => {
-          total += enroll.courseId.price;
-        });
-        setEarning(total);
+        setEarning(data.total);
       }
     } catch (error) {
       toast.error(error.message);

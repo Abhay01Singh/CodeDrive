@@ -69,48 +69,56 @@ const CreateCourse = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white rounded-2xl shadow-md">
-      <h2 className="text-3xl font-bold text-indigo-700 mb-6">
+    <div className="max-w-3xl mx-auto p-8 bg-white rounded-3xl shadow-xl ring-1 ring-indigo-100">
+      <h2 className="text-4xl font-extrabold text-indigo-700 mb-8 text-center">
         📚 Create a New Course
       </h2>
 
-      <form onSubmit={onSubmitHandler} className="space-y-6">
+      <form onSubmit={onSubmitHandler} className="space-y-8">
         {/* Title */}
         <div>
-          <label className="block font-medium mb-1">Course Title</label>
+          <label className="block font-semibold mb-2 text-lg text-indigo-700">
+            Course Title
+          </label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="input input-bordered w-full"
+            className="input input-bordered w-full py-3 px-4 rounded-lg border-indigo-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-300 transition"
             placeholder="Enter course title"
             required
+            autoComplete="off"
           />
         </div>
 
         {/* Description */}
         <div>
-          <label className="block font-medium mb-1">Description</label>
+          <label className="block font-semibold mb-2 text-lg text-indigo-700">
+            Description
+          </label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="textarea textarea-bordered w-full"
-            rows={4}
+            className="textarea textarea-bordered w-full rounded-lg min-h-[110px] border-indigo-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-300 transition px-4 py-3"
             placeholder="Write a short description..."
             required
           />
         </div>
 
         {/* Category & Level */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block font-medium mb-1">Category</label>
+            <label className="block font-semibold mb-2 text-indigo-700">
+              Category
+            </label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="select select-bordered w-full"
+              className="select select-bordered w-full rounded-lg border-indigo-300 shadow-sm focus:ring-indigo-300 focus:border-indigo-500 transition p-3 text-indigo-900"
               required>
-              <option value="">Select Category</option>
+              <option value="" disabled>
+                Select Category
+              </option>
               {courseCategories.map((cat, idx) => (
                 <option key={idx} value={cat.text}>
                   {cat.text}
@@ -118,14 +126,19 @@ const CreateCourse = () => {
               ))}
             </select>
           </div>
+
           <div>
-            <label className="block font-medium mb-1">Level</label>
+            <label className="block font-semibold mb-2 text-indigo-700">
+              Level
+            </label>
             <select
               value={level}
               onChange={(e) => setLevel(e.target.value)}
-              className="select select-bordered w-full"
+              className="select select-bordered w-full rounded-lg border-indigo-300 shadow-sm focus:ring-indigo-300 focus:border-indigo-500 transition p-3 text-indigo-900"
               required>
-              <option value="">Select Level</option>
+              <option value="" disabled>
+                Select Level
+              </option>
               <option>Beginner</option>
               <option>Intermediate</option>
               <option>Advanced</option>
@@ -134,26 +147,31 @@ const CreateCourse = () => {
         </div>
 
         {/* Price & Discount */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block font-medium mb-1">Price (₹)</label>
+            <label className="block font-semibold mb-2 text-indigo-700">
+              Price (₹)
+            </label>
             <input
               type="number"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              className="input input-bordered w-full"
+              className="input input-bordered w-full py-3 px-4 rounded-lg border-indigo-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-300 transition"
               placeholder="0"
               min={0}
               required
             />
           </div>
+
           <div>
-            <label className="block font-medium mb-1">Discount (%)</label>
+            <label className="block font-semibold mb-2 text-indigo-700">
+              Discount (%)
+            </label>
             <input
               type="number"
               value={discount}
               onChange={(e) => setDiscount(e.target.value)}
-              className="input input-bordered w-full"
+              className="input input-bordered w-full py-3 px-4 rounded-lg border-indigo-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-300 transition"
               placeholder="10"
               min={0}
               max={100}
@@ -163,24 +181,29 @@ const CreateCourse = () => {
         </div>
 
         {/* Tags & Duration */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block font-medium mb-1">Tags</label>
+            <label className="block font-semibold mb-2 text-indigo-700">
+              Tags
+            </label>
             <input
               type="text"
               value={tags}
               onChange={(e) => setTags(e.target.value)}
-              className="input input-bordered w-full"
+              className="input input-bordered w-full py-3 px-4 rounded-lg border-indigo-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-300 transition"
               placeholder="e.g. React, Web Dev"
             />
           </div>
+
           <div>
-            <label className="block font-medium mb-1">Duration</label>
+            <label className="block font-semibold mb-2 text-indigo-700">
+              Duration
+            </label>
             <input
               type="text"
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
-              className="input input-bordered w-full"
+              className="input input-bordered w-full py-3 px-4 rounded-lg border-indigo-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-300 transition"
               placeholder="e.g. 4 weeks"
               required
             />
@@ -189,24 +212,26 @@ const CreateCourse = () => {
 
         {/* Thumbnail Upload */}
         <div>
-          <label className="block font-medium mb-1">Thumbnail Image</label>
+          <label className="block font-semibold mb-2 text-indigo-700">
+            Thumbnail Image
+          </label>
           <input
             type="file"
             accept="image/*"
             onChange={handleImageChange}
-            className="file-input file-input-bordered w-full"
+            className="file-input file-input-bordered w-full rounded-lg border-indigo-300 shadow-sm focus:ring-indigo-300 focus:border-indigo-500 transition"
           />
           {previewImage && (
-            <div className="mt-4 relative">
+            <div className="mt-4 relative rounded-lg overflow-hidden shadow-md border border-indigo-200">
               <img
                 src={URL.createObjectURL(previewImage)}
                 alt="Preview"
-                className="h-40 w-full object-cover rounded border"
+                className="h-40 w-full object-cover"
               />
               <button
                 type="button"
                 onClick={() => setPreviewImage(null)}
-                className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-red-100"
+                className="absolute top-2 right-2 bg-white rounded-full p-2 shadow hover:bg-red-100 text-red-600 font-bold"
                 title="Remove image">
                 ✖
               </button>
@@ -216,12 +241,14 @@ const CreateCourse = () => {
 
         {/* Video URL */}
         <div>
-          <label className="block font-medium mb-1">Video Link (YouTube)</label>
+          <label className="block font-semibold mb-2 text-indigo-700">
+            Video Link (YouTube)
+          </label>
           <input
-            type="text"
+            type="url"
             value={videoUrl}
             onChange={(e) => setVideoUrl(e.target.value)}
-            className="input input-bordered w-full"
+            className="input input-bordered w-full py-3 px-4 rounded-lg border-indigo-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-300 transition"
             placeholder="https://www.youtube.com/watch?v=..."
             required
           />
@@ -230,8 +257,9 @@ const CreateCourse = () => {
         {/* Submit */}
         <button
           type="submit"
-          className="btn bg-indigo-600 text-white hover:bg-indigo-700 w-full flex items-center justify-center gap-2 text-lg py-2 rounded-xl">
-          <FaUpload /> Publish Course
+          className="btn bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-purple-600 hover:to-indigo-600 text-white w-full flex items-center justify-center gap-3 py-3 rounded-xl text-xl font-semibold shadow-lg transition-transform hover:scale-105">
+          <FaUpload className="text-white text-lg" />
+          Publish Course
         </button>
       </form>
     </div>

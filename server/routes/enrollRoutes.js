@@ -11,7 +11,7 @@ const enrollRouter = express.Router();
 
 enrollRouter.post("/razorpay", authUser, enrollRazorpay);
 enrollRouter.get("/courses", authUser, getEnrollCourses);
-enrollRouter.post("/razorpay/verify", verifyRazorpayPayment);
+enrollRouter.post("/razorpay/verify", authUser, verifyRazorpayPayment);
 enrollRouter.get("/earning", authUser, getAllEnrollCourseAmount);
 
 export default enrollRouter;

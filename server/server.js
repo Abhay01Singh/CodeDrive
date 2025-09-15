@@ -40,7 +40,7 @@ app.use("/api/instructor", instructorRouter);
 app.use("/api/course", courseRouter);
 app.use("/api/enroll", enrollRouter);
 app.use("/api/doubt", doubtRouter);
-app.use("/", chatRouter);
+app.use("/api/chat", chatRouter);
 
 // Create HTTP + Socket.IO server
 const server = http.createServer(app);

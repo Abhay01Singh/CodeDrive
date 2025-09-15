@@ -5,6 +5,6 @@ import { chatbotResponse } from "../controllers/chatAIController.js";
 
 const chatRouter = express.Router();
 
-chatRouter.post("/api/chat", chatbotResponse);
+chatRouter.post("/send", chatbotResponse);
 
 export default chatRouter;

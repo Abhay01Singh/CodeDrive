@@ -21,9 +21,6 @@ export const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({ name, email, password: hashedPassword });
 
-    // why token used?
-    // To authenticate the user and maintain session state
-    // JWT (JSON Web Token) is used to securely transmit information between parties as a JSON object.
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
